@@ -1,4 +1,4 @@
-const Mail = require("../lib/Mail");
+const Queue = require("../lib/Queue");
 
 async function store(req, res) {
   const { name, email, password } = req.body;
@@ -9,12 +9,9 @@ async function store(req, res) {
     password,
   };
 
-  await Mail.sendMail({
-    from: "Queue Test <queue@queuetest.com.br>",
-    to: `${name} <${email}>`,
-    subject: "Cadastro",
-    html: `Olá, ${name}, bem-vindo ao sistema de queues =D`,
-  });
+  await Queue.add("RegistrationMail", { user });
+
+  await Queue.add("UserReport", { user });
 
   return res.json(user);
 }
